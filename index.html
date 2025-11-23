@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Densité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .formula {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            color: #444;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .unit {
+            position: absolute;
+            right: 15px;
+            color: #888;
+            font-size: 0.9em;
+            pointer-events: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result-label {
+            color: white;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .examples {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .example-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .example-item:last-child {
+            border-bottom: none;
+        }
+
+        .example-name {
+            font-weight: 600;
+            color: #444;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .formula {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur de Densité</h1>
+        <p class="subtitle">Calculez la densité d'un objet ou d'une substance</p>
+
+        <div class="formula">
+            ρ = m / V
+        </div>
+
+        <div class="input-group">
+            <label for="mass">Masse (m)</label>
+            <div class="input-wrapper">
+                <input type="number" id="mass" placeholder="Entrez la masse" step="0.001" min="0">
+                <span class="unit">kg</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="volume">Volume (V)</label>
+            <div class="input-wrapper">
+                <input type="number" id="volume" placeholder="Entrez le volume" step="0.001" min="0">
+                <span class="unit">m³</span>
+            </div>
+        </div>
+
+        <button onclick="calculateDensity()">Calculer la Densité</button>
+
+        <div class="result" id="result">
+            <div class="result-label">Densité (ρ)</div>
+            <div class="result-value" id="resultValue">0 kg/m³</div>
+        </div>
+
+        <div class="examples">
+            <h3>Exemples de densités</h3>
+            <div class="example-item">
+                <span class="example-name">Eau</span>
+                <span>1000 kg/m³</span>
+            </div>
+            <div class="example-item">
+                <span class="example-name">Aluminium</span>
+                <span>2700 kg/m³</span>
+            </div>
+            <div class="example-item">
+                <span class="example-name">Fer</span>
+                <span>7874 kg/m³</span>
+            </div>
+            <div class="example-item">
+                <span class="example-name">Or</span>
+                <span>19320 kg/m³</span>
+            </div>
+            <div class="example-item">
+                <span class="example-name">Air</span>
+                <span>1.225 kg/m³</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateDensity() {
+            const mass = parseFloat(document.getElementById('mass').value);
+            const volume = parseFloat(document.getElementById('volume').value);
+            const resultDiv = document.getElementById('result');
+            const resultValue = document.getElementById('resultValue');
+
+            if (isNaN(mass) || isNaN(volume)) {
+                alert('Veuillez entrer des valeurs valides pour la masse et le volume.');
+                return;
+            }
+
+            if (volume <= 0) {
+                alert('Le volume doit être supérieur à zéro.');
+                return;
+            }
+
+            if (mass < 0) {
+                alert('La masse ne peut pas être négative.');
+                return;
+            }
+
+            const density = mass / volume;
+
+            resultValue.textContent = `${density.toFixed(3)} kg/m³`;
+            resultDiv.classList.add('show');
+
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        document.getElementById('mass').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('volume').focus();
+            }
+        });
+
+        document.getElementById('volume').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateDensity();
+            }
+        });
+    </script>
+</body>
+</html>
